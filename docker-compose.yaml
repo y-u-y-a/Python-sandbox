@@ -1,0 +1,32 @@
+version: "3"
+services:
+  # mysql:
+  #   container_name: python_mysql
+  #   build:
+  #     context: ./build/mysql
+  #   ports:
+  #     - 4306:3306
+  #   volumes:
+  #     - mysql-data:/var/lib/mysql
+  #   restart: always
+
+  python:
+    container_name: python_backend
+    build:
+      context: ./build/python
+    volumes:
+      - ./code:/code
+    ports:
+      - 8000:8000
+    working_dir: /code # コンテナ起動時のディレクトリを指定
+    tty: true # コンテナを立ち上げっぱなしにする（ttyとは、標準出力の接続先デバイス）
+    # depends_on:
+    #   - mysql
+
+# volumes:
+#   mysql-data:
+#     external: false
+
+# networks:
+#   default:
+#     external: false
