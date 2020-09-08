@@ -1,7 +1,4 @@
-import base58
-import codecs
-import hashlib
-
+import base58, codecs, hashlib
 from ecdsa import NIST256p, SigningKey
 
 import utils
@@ -14,7 +11,7 @@ class Wallet(object):
         self._public_key = self._private_key.get_verifying_key()
         self._blockchain_address = self.generate_blockchain_address()
 
-    # __init__で定義した変数をデコレート？
+    # decorate？
     @property
     def private_key(self):
         return self._private_key.to_string().hex()
@@ -28,7 +25,7 @@ class Wallet(object):
         return self._blockchain_address
 
 
-    # 分からん
+    # Don't understand
     def generate_blockchain_address(self):
         # 2
         public_key_bytes = self._public_key.to_string()
@@ -72,13 +69,13 @@ class Transaction(object):
     def generate_signature(self):
         sha256 = hashlib.sha256()
         transaction = {
-            "sender_address": self.sender_address,
-            "recipient_address": self.recipient_address,
-            "value": float(self.value)
+            'sender_address': self.sender_address,
+            'recipient_address': self.recipient_address,
+            'value': float(self.value)
         }
         transaction = utils.sorted_dict_by_key(transaction)
 
-        sha256.update(str(transaction).encode("utf-8"))
+        sha256.update(str(transaction).encode('utf-8'))
         message = sha256.digest()
         private_key = SigningKey.from_string(
             bytes().fromhex(self.sender_private_key), curve=NIST256p)
@@ -90,17 +87,17 @@ class Transaction(object):
 
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     wallet_M = Wallet()
     wallet_A = Wallet()
     wallet_B = Wallet()
 
-    # 取引内容の生成
+    # generate transaction content
     t = Transaction(
         wallet_A.private_key, wallet_A.public_key, wallet_A.blockchain_address, wallet_B.blockchain_address, 1.0)
 
 
-########## BlockChain Node
+# BlockChain Node ################
 
 import blockchain
 
@@ -114,9 +111,9 @@ is_added = block_chain.add_transaction(
     t.generate_signature()
 )
 
-print("Added?", is_added)
+print('Added?', is_added)
 block_chain.mining()
 utils.pprint(block_chain.chain)
 
-print("A", block_chain.calculate_total_amount(wallet_A.blockchain_address))
-print("B", block_chain.calculate_total_amount(wallet_B.blockchain_address))
+print('A', block_chain.calculate_total_amount(wallet_A.blockchain_address))
+print('B', block_chain.calculate_total_amount(wallet_B.blockchain_address))

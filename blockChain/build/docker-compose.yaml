@@ -4,7 +4,7 @@ services:
   python:
     container_name: blockChain
     build:
-      context: ./build/python
+      context: ./build
     volumes:
       - ./code:/code
     working_dir: /code
