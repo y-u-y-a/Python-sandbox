@@ -1,0 +1,4 @@
+_sample
+.venv
+.env
+Pipfile.lock
