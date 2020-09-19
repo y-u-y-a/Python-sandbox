@@ -3,7 +3,7 @@ import chardet
 
 # import numpy as np
 # import pandas as pd
-# import openpyxl as excel
+# import openpyxl as ex
 
 def get_encoding(file_path):
     """get file encoding"""
@@ -15,6 +15,9 @@ def get_encoding(file_path):
     return encoding
 
 
+# 使い方########################################################
+# libs.convert_encoding(input_file, output_file, from_encoding)
+###############################################################
 def convert_encoding(input_path, output_path, from_encoding='shift_jis', to_encoding='utf-8'):
     """encodingを変換してファイルへ書き込み"""
 
@@ -26,12 +29,6 @@ def convert_encoding(input_path, output_path, from_encoding='shift_jis', to_enco
 
     input_file.close()
     output_file.close()
-    # テスト用
-    # for index, row in enumerate(input_file):
-    #     output_file.write(row)
-    #     if index == 10:
-    #         break
-
 
 
 def convert_tsv(input_path, output_path, from_encoding='shift_jis', to_encoding='utf-8'):
@@ -42,7 +39,7 @@ def convert_tsv(input_path, output_path, from_encoding='shift_jis', to_encoding=
 
     # 区切りがタブであることを指定
     data = csv.reader(input_file, delimiter='\t')
-    target_file = csv.writer(output_file)
+    target_file = csv.writer(output_file, delimiter=',')
 
     for row in data:
         target_file.writerow(row)
