@@ -3,7 +3,6 @@ import csv, codecs, pprint
 import chardet
 import pandas as pd
 import openpyxl as exl
-# import numpy as np
 
 
 def get_encoding(file_path):
