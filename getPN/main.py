@@ -23,7 +23,7 @@ def get_excel_file():
 
 
 def get_driver():
-    """ driverを取得 """
+    """driverを取得"""
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
@@ -31,15 +31,13 @@ def get_driver():
     driver = webdriver.Chrome(DRIVER_PATH, options=options)
     return driver
 
-def write_to_sheet(book, sheet, row, dict) -> None:
+def write_to_sheet(book, sheet, row, dict_data) -> None:
     """シート書き込み"""
     try:
-        sheet.cell(row=row, column=1, value=dict['name'])
-        sheet.cell(row=row, column=2, value=dict['url'])
-        sheet.cell(row=row, column=3, value=dict['charge'])
-        sheet.cell(row=row, column=4, value=dict['appointment'])
-        sheet.cell(row=row, column=5, value=dict['phone_number'])
-        sheet.cell(row=row, column=6, value=dict['phone_number_2'])
+        n = 1
+        for _ , val in dict_data.items():
+            sheet.cell(row=row, column=n, value=val)
+            n += 1
     except Exception:
         return
     return
@@ -70,14 +68,6 @@ def update_company(company) -> dict:
 
 
 def main():
-# 流れ #########################
-# 1. シートを作成
-# 2. csvデータをdictの配列に変換
-# 3. 会社情報の更新・取得
-# 4. ラベル追加
-# 5. シート書込み
-################################
-
     # 1. ブック・シート作成
     sheet_name: str = 'wantedly_list'
     output_path: str = './_files/output.xlsx'
@@ -97,16 +87,17 @@ def main():
         """会社情報の更新と追加"""
         company = update_company(company)
         result.append(company)
-        pprint.pprint(serial_index)
+        print(serial_index)
         return
 
+    # [並列処理]
     i = 0
-    thread_num = 5
-    loop_times = math.ceil(len(company_list)/thread_num)
+    thread_range = 15
+    loop_times = math.ceil(len(company_list)/thread_range)
     for _ in range(loop_times):
         threads = []
-        for j in range(thread_num):
-            serial_index = i*thread_num + j # 会社の通し番号として使用
+        for j in range(thread_range):
+            serial_index = i*thread_range + j # 会社の通し番号として使用
             company = company_list[serial_index]
             t = threading.Thread(
                 target=get_company,
@@ -130,8 +121,7 @@ def main():
     result.insert(0, sheet_label)
     # 5. シート書込み
     for i, company in enumerate(result):
-        pprint.pprint(company)
-        write_to_sheet(book, sheet, row=i+1, dict=company)
+        write_to_sheet(book, sheet, row=i+1, dict_data=company)
         book.save(output_path)
 
 
