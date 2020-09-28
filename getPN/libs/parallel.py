@@ -16,6 +16,7 @@ def exec_thred(num_divided_list, thread_range, target_func) -> None:
         wait_all_threads(threads)
         i += 1
 
+
 def wait_all_threads(threads) -> None:
     """それぞれのスレッドが終了するまで待つ"""
     for thread in threads:

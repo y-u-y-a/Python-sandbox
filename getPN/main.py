@@ -3,9 +3,6 @@ import os, time, math, threading
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 import openpyxl as exl
 
 from libs import converter as cvt
@@ -22,6 +19,7 @@ def get_excel_file():
         usecols=[1, 3, 4, 5, 11],
         index_col=0)
     return
+
 
 
 def get_driver():
@@ -49,12 +47,12 @@ def write_to_sheet(book, sheet, row, dict) -> None:
 
 def update_company(company) -> dict:
     """電話番号の更新"""
-    # start
+    # [input]
     driver = get_driver()
     url = 'https://google.com/'
     name_of_el = 'q'
-    # 検索
     serach_word = f"{company['name']} 電話番号"
+    # start
     driver.get(url)
     serach_form = driver.find_element_by_name(name_of_el)
     serach_form.send_keys(serach_word)
@@ -64,9 +62,10 @@ def update_company(company) -> dict:
         company['phone_number_2'] = phone_number
     except Exception:
         company['phone_number_2'] = ''
-    time.sleep(1)
+    finally:
+        driver.quit()
     # end
-    driver.quit()
+    time.sleep(1)
     return company
 
 
