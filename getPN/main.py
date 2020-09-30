@@ -10,15 +10,18 @@ from libs import parallel
 
 DRIVER_PATH = os.environ['DRIVER_PATH']
 
-# # 最初のみ
-# def get_csv_from_excel() -> None:
-#     cvt.excel_to_csv(
-#         input_file_path='_files/company_list.xlsx',
-#         output_file_path='./_files/company_list.csv',
-#         sheet_name=1,
-#         usecols=[1, 3, 4, 5, 11],
-#         index_col=0)
-#     return
+# 最初のみ
+def get_csv_from_excel() -> None:
+    """excelのデータをcsvに変換して取得"""
+    cvt.excel_to_csv(
+        input_file_path='_files/company_list.xlsx',
+        output_file_path='./_files/company_list.csv',
+        sheet_name=1,
+        usecols=[1, 3, 4, 5, 11],
+        index_col=0)
+    return
+
+
 
 
 # csvから取得〜sheetに書き込み
@@ -66,27 +69,14 @@ def get_phone_number(company_name) -> str:
     finally:
         # end
         driver.quit()
-        time.sleep(1)
+        # time.sleep(1)
         return phone_number
 
 
-def main():
-    # 1. ブック・シート作成
-    book = exl.Workbook()
-    sheet = book.worksheets[0]
-    sheet.title = 'wantedly_list'
-    output_path: str = './_files/output.xlsx'
+def update_company_list(company_list, thread_range):
+    """会社情報の取得・更新"""
 
-    # 2. csvデータをdictの配列に変換
-    input_file_path: str = '_files/company_list.csv'
-    dict_keys: list = ['name', 'url', 'charge', 'appointment', 'phone_number']
-    company_list: list = cvt.csv_to_dicts(
-        file_path=input_file_path,
-        dict_keys=dict_keys)
-
-    # 3. 会社情報の更新・取得
-    result = []
-    def update_company(company, serial_index) -> None:
+    def add_phone_number(company, serial_index) -> None:
         """会社情報の更新と追加"""
         company['id'] = serial_index
         company['phone_number_2'] = get_phone_number(company['name'])
@@ -95,16 +85,18 @@ def main():
         return
 
     # [並列処理]
+    result = []
     i = 0
-    thread_range = 25 # 同時スレッドの数を指定
+    thread_range = thread_range # 同時スレッドの数を指定
     loop_times = math.ceil(len(company_list)/thread_range)
     for _ in range(loop_times):
         threads = []
         for j in range(thread_range):
-            serial_index = i*thread_range + j # listにおける会社の通し番号として使用
+            # company_listにおけるindex
+            serial_index = i*thread_range + j
             company = company_list[serial_index]
             t = threading.Thread(
-                target=update_company,
+                target=add_phone_number,
                 args=(company, serial_index))
             t.setDaemon(True)
             t.start()
@@ -112,10 +104,27 @@ def main():
         parallel.wait_all_threads(threads)
         i += 1
 
-    # 4. idで並び順を整理
-    result: list = sorted(result, key=lambda x: x['id'])
+    # idで並び順を整理
+    return sorted(result, key=lambda x: x['id'])
 
-    # 5. ラベルの追加
+
+def main():
+
+    # 1. ブック取得
+    book_path: str = './_files/output.xlsx'
+    book = exl.load_workbook(book_path)
+    sheet = book.worksheets[0]
+    input_file_path: str = './_files/company_list.csv'
+    dict_keys: list = ['name', 'url', 'charge', 'appointment', 'phone_number']
+    company_list: list = cvt.csv_to_dicts(
+        file_path=input_file_path,
+        dict_keys=dict_keys)
+    company_list: list = company_list[0:1000]
+
+    # 2. 会社情報の更新処理
+    result = update_company_list(company_list, thread_range=20)
+
+    # 3. ラベルの追加
     sheet_label: dict = {
         'id': 'No.',
         'name': '会社名',
@@ -126,13 +135,15 @@ def main():
         'phone_number_2': '取得電話番号'
     }
     result.insert(0, sheet_label)
-    # 6. シート書込み
+
+    # 4. シート書込み
     for i, company in enumerate(result):
         write_to_sheet(book, sheet, row=i+1, company=company)
-        book.save(output_path)
+        book.save(book_path)
 
 
 
 if __name__ == '__main__':
     # get_csv_from_excel()
+    cvt.create_excel_book('./_files/output.xlsx')
     main()

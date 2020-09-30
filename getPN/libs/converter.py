@@ -46,15 +46,6 @@ def tsv_to_csv(input_path, output_path, from_encoding='shift_jis', to_encoding='
     output_file.close()
 
 
-# use pandas
-def excel_to_csv(input_file_path, output_file_path, sheet_name, usecols, index_col=0):
-    """エクセルのシートを指定してCSVに変換"""
-    # read sheet
-    df = pd.read_excel(input_file_path, sheet_name=sheet_name, index_col=index_col, usecols=usecols)
-    df.to_csv(output_file_path)
-    return
-
-
 # use codecs
 def csv_to_dicts(file_path, dict_keys):
     """csvファイルをlistに変換"""
@@ -64,3 +55,18 @@ def csv_to_dicts(file_path, dict_keys):
         for row in get_list:
             result_list.append(dict(row))
     return result_list
+
+
+# エクセル関係
+def excel_to_csv(input_file_path, output_file_path, sheet_name, usecols, index_col=0) -> None:
+    """excelのsheetを指定してCSVに変換"""
+    # read sheet
+    df = pd.read_excel(input_file_path, sheet_name=sheet_name, index_col=index_col, usecols=usecols)
+    df.to_csv(output_file_path)
+    return
+
+def create_excel_book(book_path):
+    """excelブックを作成"""
+    book = exl.Workbook()
+    book.save(book_path)
+    return book
