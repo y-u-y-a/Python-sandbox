@@ -14,8 +14,8 @@ DRIVER_PATH = os.environ['DRIVER_PATH']
 def get_csv_from_excel() -> None:
     """excelのデータをcsvに変換して取得"""
     cvt.excel_to_csv(
-        input_file_path='_files/company_list.xlsx',
-        output_file_path='./_files/company_list.csv',
+        input_file_path='_storage/company_list.xlsx',
+        output_file_path='./_storage/company_list.csv',
         sheet_name=1,
         usecols=[1, 3, 4, 5, 11],
         index_col=0)
@@ -111,18 +111,18 @@ def update_company_list(company_list, thread_range):
 def main():
 
     # 1. ブック取得
-    book_path: str = './_files/output.xlsx'
+    book_path: str = './_storage/output.xlsx'
     book = exl.load_workbook(book_path)
     sheet = book.worksheets[0]
-    input_file_path: str = './_files/company_list.csv'
+    input_file_path: str = './_storage/company_list.csv'
     dict_keys: list = ['name', 'url', 'charge', 'appointment', 'phone_number']
     company_list: list = cvt.csv_to_dicts(
         file_path=input_file_path,
         dict_keys=dict_keys)
-    company_list: list = company_list[0:1000]
+    company_list: list = company_list[25000:25500]
 
     # 2. 会社情報の更新処理
-    result = update_company_list(company_list, thread_range=20)
+    result = update_company_list(company_list, thread_range=10)
 
     # 3. ラベルの追加
     sheet_label: dict = {
@@ -145,5 +145,5 @@ def main():
 
 if __name__ == '__main__':
     # get_csv_from_excel()
-    cvt.create_excel_book('./_files/output.xlsx')
+    cvt.create_excel_book('./_storage/output.xlsx')
     main()
