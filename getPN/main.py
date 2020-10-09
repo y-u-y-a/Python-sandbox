@@ -45,7 +45,7 @@ def get_phone_number(company_name) -> str:
     def get_driver():
         """driverを取得"""
         options = Options()
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--lang=ja') # configure language
         driver = webdriver.Chrome(DRIVER_PATH, options=options)
@@ -54,13 +54,10 @@ def get_phone_number(company_name) -> str:
     # [input]
     driver = get_driver()
     url = 'https://google.com/'
-    name_of_el = 'q'
     serach_word = f"{company_name} 電話番号"
     # start
     driver.get(url)
-    time.sleep(10)
-    driver.quit()
-    serach_form = driver.find_element_by_name(name_of_el)
+    serach_form = driver.find_element_by_name('q')
     serach_form.send_keys(serach_word)
     serach_form.submit()
     try:
@@ -70,35 +67,42 @@ def get_phone_number(company_name) -> str:
     finally:
         # end
         driver.quit()
-        # time.sleep(1)
         return phone_number
 
 
-def update_company_list(company_list, thread_range):
+def update_company_list(company_list):
     """会社情報の取得・更新"""
 
-    def add_phone_number(company, serial_index) -> None:
+    # result: list = []
+    # for i, company in enumerate(company_list):
+    #     company['id'] = i
+    #     company['phone_number_2'] = get_phone_number(company['name'])
+    #     result.append(company)
+    #     print(i)
+    # return result
+
+    def add_phone_number(company, company_index) -> None:
         """会社情報の更新と追加"""
-        company['id'] = serial_index
+        company['id'] = company_index
         company['phone_number_2'] = get_phone_number(company['name'])
         result.append(company)
-        print(serial_index)
+        print(company_index)
         return
 
     # [並列処理]
     result = []
     i = 0
-    thread_range = thread_range # 同時スレッドの数を指定
+    thread_range = 10 #### 同時スレッドの数を指定 ##########
     loop_times = math.ceil(len(company_list)/thread_range)
     for _ in range(loop_times):
         threads = []
         for j in range(thread_range):
             # company_listにおけるindex
-            serial_index = i*thread_range + j
-            company = company_list[serial_index]
+            company_index = i*thread_range + j
+            company = company_list[company_index]
             t = threading.Thread(
                 target=add_phone_number,
-                args=(company, serial_index))
+                args=(company, company_index))
             t.setDaemon(True)
             t.start()
             threads.append(t)
@@ -121,12 +125,10 @@ def main():
         file_path=input_file_path,
         dict_keys=dict_keys
     )
-    # company_list: list = company_list[:5]
-    # company_list: list = company_list[25500:27500]
+    company_list: list = company_list[25500:27500]
 
     # 2. company_listを更新
-    updated_company_list = update_company_list(company_list, thread_range=1)
-    # return pprint.pprint(updated_company_list)
+    updated_company_list = update_company_list(company_list)
 
     # 3. シートにラベルの追加
     sheet_label: dict = {
