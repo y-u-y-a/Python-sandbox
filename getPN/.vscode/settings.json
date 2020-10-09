@@ -1,5 +1,5 @@
 {
     // 自動で仮想環境を指定してターミナルが起動
     "python.venvPath": "${workspaceFolder}/.venv",
-    "python.pythonPath": "${workspaceFolder}/.venv/bin/python"
+    "python.pythonPath": ".venv/bin/python",
 }

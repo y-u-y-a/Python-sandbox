@@ -35,9 +35,8 @@ def write_to_sheet(book, sheet, row, company) -> None:
         sheet.cell(row=row, column=5, value=company['appointment'])
         sheet.cell(row=row, column=6, value=company['phone_number'])
         sheet.cell(row=row, column=7, value=company['phone_number_2'])
+        return
     except Exception:
-        pass
-    finally:
         return
 
 def get_phone_number(company_name) -> str:
@@ -46,7 +45,7 @@ def get_phone_number(company_name) -> str:
     def get_driver():
         """driverを取得"""
         options = Options()
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--lang=ja') # configure language
         driver = webdriver.Chrome(DRIVER_PATH, options=options)
@@ -61,18 +60,18 @@ def get_phone_number(company_name) -> str:
     driver.get(url)
     time.sleep(10)
     driver.quit()
-    # serach_form = driver.find_element_by_name(name_of_el)
-    # serach_form.send_keys(serach_word)
-    # serach_form.submit()
-    # try:
-    #     phone_number = driver.find_element_by_class_name('mw31Ze').text
-    # except Exception:
-    #     phone_number = ''
-    # finally:
-    #     # end
-    #     driver.quit()
-    #     # time.sleep(1)
-    #     return phone_number
+    serach_form = driver.find_element_by_name(name_of_el)
+    serach_form.send_keys(serach_word)
+    serach_form.submit()
+    try:
+        phone_number = driver.find_element_by_class_name('mw31Ze').text
+    except Exception:
+        phone_number = ''
+    finally:
+        # end
+        driver.quit()
+        # time.sleep(1)
+        return phone_number
 
 
 def update_company_list(company_list, thread_range):
@@ -122,12 +121,14 @@ def main():
         file_path=input_file_path,
         dict_keys=dict_keys
     )
-    company_list: list = company_list[25000:25500]
+    # company_list: list = company_list[:5]
+    # company_list: list = company_list[25500:27500]
 
-    # 2. 会社情報の更新処理
-    result = update_company_list(company_list, thread_range=10)
+    # 2. company_listを更新
+    updated_company_list = update_company_list(company_list, thread_range=1)
+    # return pprint.pprint(updated_company_list)
 
-    # 3. ラベルの追加
+    # 3. シートにラベルの追加
     sheet_label: dict = {
         'id': 'No.',
         'name': '会社名',
@@ -137,10 +138,10 @@ def main():
         'phone_number': '電話番号',
         'phone_number_2': '取得電話番号'
     }
-    result.insert(0, sheet_label)
+    updated_company_list.insert(0, sheet_label)
 
-    # 4. シート書込み
-    for i, company in enumerate(result):
+    # 4. シートに書込み
+    for i, company in enumerate(updated_company_list):
         write_to_sheet(book, sheet, row=i+1, company=company)
         book.save(book_path)
 

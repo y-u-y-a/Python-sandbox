@@ -7,7 +7,7 @@ def start_threads(base_list, thread_range, target_func) -> None:
     loop_times = math.ceil(len(base_list)/thread_range)
     for _ in range(loop_times):
         threads = []
-        for j in range(thread_range):
+        for _ in range(thread_range):
             # serial_index = i*thread_range + j # base_listにおけるindex
             t = threading.Thread(target=target_func)
             t.setDaemon(True)
