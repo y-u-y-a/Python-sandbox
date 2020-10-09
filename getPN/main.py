@@ -35,10 +35,10 @@ def write_to_sheet(book, sheet, row, company) -> None:
         sheet.cell(row=row, column=5, value=company['appointment'])
         sheet.cell(row=row, column=6, value=company['phone_number'])
         sheet.cell(row=row, column=7, value=company['phone_number_2'])
-        return
     except Exception:
+        pass
+    finally:
         return
-
 
 def get_phone_number(company_name) -> str:
     """電話番号の更新"""
@@ -59,18 +59,20 @@ def get_phone_number(company_name) -> str:
     serach_word = f"{company_name} 電話番号"
     # start
     driver.get(url)
-    serach_form = driver.find_element_by_name(name_of_el)
-    serach_form.send_keys(serach_word)
-    serach_form.submit()
-    try:
-        phone_number = driver.find_element_by_class_name('mw31Ze').text
-    except Exception:
-        phone_number = ''
-    finally:
-        # end
-        driver.quit()
-        # time.sleep(1)
-        return phone_number
+    time.sleep(10)
+    driver.quit()
+    # serach_form = driver.find_element_by_name(name_of_el)
+    # serach_form.send_keys(serach_word)
+    # serach_form.submit()
+    # try:
+    #     phone_number = driver.find_element_by_class_name('mw31Ze').text
+    # except Exception:
+    #     phone_number = ''
+    # finally:
+    #     # end
+    #     driver.quit()
+    #     # time.sleep(1)
+    #     return phone_number
 
 
 def update_company_list(company_list, thread_range):
@@ -118,7 +120,8 @@ def main():
     dict_keys: list = ['name', 'url', 'charge', 'appointment', 'phone_number']
     company_list: list = cvt.csv_to_dicts(
         file_path=input_file_path,
-        dict_keys=dict_keys)
+        dict_keys=dict_keys
+    )
     company_list: list = company_list[25000:25500]
 
     # 2. 会社情報の更新処理
