@@ -73,14 +73,6 @@ def get_phone_number(company_name) -> str:
 def update_company_list(company_list):
     """会社情報の取得・更新"""
 
-    # result: list = []
-    # for i, company in enumerate(company_list):
-    #     company['id'] = i
-    #     company['phone_number_2'] = get_phone_number(company['name'])
-    #     result.append(company)
-    #     print(i)
-    # return result
-
     def add_phone_number(company, company_index) -> None:
         """会社情報の更新と追加"""
         company['id'] = company_index
@@ -94,10 +86,11 @@ def update_company_list(company_list):
     i = 0
     thread_range = 10 #### 同時スレッドの数を指定 ##########
     loop_times = math.ceil(len(company_list)/thread_range)
+    # 繰り返し回数
     for _ in range(loop_times):
+        # スレッド処理
         threads = []
         for j in range(thread_range):
-            # company_listにおけるindex
             company_index = i*thread_range + j
             company = company_list[company_index]
             t = threading.Thread(
@@ -125,7 +118,7 @@ def main():
         file_path=input_file_path,
         dict_keys=dict_keys
     )
-    company_list: list = company_list[25500:27500]
+    company_list: list = company_list[27000:27500]
 
     # 2. company_listを更新
     updated_company_list = update_company_list(company_list)
