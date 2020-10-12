@@ -31,7 +31,7 @@ def get_phone_number(company_name) -> str:
     """電話番号の更新"""
 
     def get_driver():
-        """driverを取得"""
+        """Chromeのdriverを取得"""
         options = Options()
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
@@ -39,7 +39,6 @@ def get_phone_number(company_name) -> str:
         driver = webdriver.Chrome(DRIVER_PATH, options=options)
         return driver
 
-    # [input]
     driver = get_driver()
     url = 'https://google.com/'
     serach_word = f"{company_name} 電話番号"
@@ -58,7 +57,7 @@ def get_phone_number(company_name) -> str:
         return phone_number
 
 
-def update_company_list(company_list):
+def update_company_list(company_list) -> list:
     """会社情報の取得・更新"""
 
     def add_phone_number(company, company_index) -> None:
@@ -72,11 +71,10 @@ def update_company_list(company_list):
     # [並列処理]
     result = []
     i = 0
-    thread_range = 10 #### 同時スレッドの数を指定 ##########
+    thread_range = 10
     loop_times = math.ceil(len(company_list)/thread_range)
-    # 繰り返し回数
+    # 総レコード数をthread_rangeで割った回数分ループ
     for _ in range(loop_times):
-        # スレッド処理
         threads = []
         for j in range(thread_range):
             company_index = i*thread_range + j
@@ -94,7 +92,7 @@ def update_company_list(company_list):
     return sorted(result, key=lambda x: x['id'])
 
 
-def main():
+def main() -> None:
 
     # 1. ブック取得
     book_path: str = './_storage/output.xlsx'
@@ -103,7 +101,7 @@ def main():
     input_file_path: str = './_storage/company_list.csv'
     dict_keys: list = ['name', 'url', 'charge', 'appointment', 'phone_number']
     company_list: list = cvt.csv_to_dicts(
-        file_path=input_file_path,
+        csv_path=input_file_path,
         dict_keys=dict_keys
     )
     company_list: list = company_list[27000:27500]
@@ -132,13 +130,13 @@ def main():
 
 if __name__ == '__main__':
     # エクセルをCSVに変換
-    # cvt.excel_to_csv(
-    #     xlsx_path='_storage/sample_list.xlsx',
-    #     csv_path='./_storage/sample_list.csv',
-    #     sheet_name='Wantedly',
-    #     usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-    #     index_col=0)
-    # エンコード
+    cvt.excel_to_csv(
+        xlsx_path='_storage/kaden.xlsx',
+        csv_path='./_storage/kaden.csv',
+        sheet_name='！新規獲得',
+        usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        index_col=1)
+    # エンコーディング変換
     # print(cvt.get_encoding('./_storage/sample.csv'))
     # cvt.convert_encoding(
     #     './_storage/sample.csv',

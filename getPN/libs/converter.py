@@ -11,7 +11,10 @@ UTF_8 = 'utf-8'
 # エンコーディング関係
 ############################
 def get_encoding(file_path):
-    """ファイルのencodingを取得"""
+    """
+    ファイルのencodingを取得
+    file_path: エンコーディングを知りたいファイルのパスを指定
+    """
 
     encoding = ''
     with codecs.open(file_path, mode='rb') as f:
@@ -20,8 +23,12 @@ def get_encoding(file_path):
     return encoding
 
 
-def convert_encoding(input_path, output_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8):
-    """encodingを変換してファイルへ書き込み"""
+def convert_encoding(input_path, output_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8) -> None:
+    """
+    encodingを変換してファイルへ書き込み
+    input_path: エンコードしたいファイルのパスを指定
+    output_path: エンコード後に書き出すファイルパスを指定
+    """
 
     input_file = codecs.open(input_path, mode='r', encoding=from_encoding)
     output_file = codecs.open(output_path, mode='w', encoding=to_encoding)
@@ -31,13 +38,19 @@ def convert_encoding(input_path, output_path, from_encoding=SHIFT_JIS, to_encodi
 
     input_file.close()
     output_file.close()
+    return
 
 
 ############################
-# 拡張子関係
+# ファイル関係
 ############################
-def tsv_to_csv(tsv_path, csv_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8):
-    """encodingを指定してTSVファイルをCSVファイルに変換"""
+def tsv_to_csv(tsv_path, csv_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8) -> None:
+    """
+    encodingを指定してTSVファイルをCSVファイルに変換
+    tsv_path: tsvのファイルパスを指定
+    csv_path: csvのファイルパスを指定
+    from_encoding: 変換したい
+    """
 
     input_file = codecs.open(tsv_path, mode='r', encoding=from_encoding)
     output_file = codecs.open(csv_path, mode='w', encoding=to_encoding)
@@ -51,9 +64,10 @@ def tsv_to_csv(tsv_path, csv_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8):
 
     input_file.close()
     output_file.close()
+    return
 
 
-def csv_to_dicts(csv_path, dict_keys):
+def csv_to_dicts(csv_path, dict_keys) -> list:
     """csvファイルをlistに変換"""
     result_list = []
     with open(csv_path, mode='r', encoding=UTF_8) as f:
@@ -66,20 +80,23 @@ def csv_to_dicts(csv_path, dict_keys):
 ############################
 # エクセル関係
 ############################
-def excel_to_csv(xlsx_path, csv_path, sheet_name, usecols, index_col=0) -> None:
+def excel_to_csv(xlsx_path, csv_path, sheet_name, usecols, index_col=0, header=1) -> None:
     """
     excelのsheetを指定してCSVに変換
     xlsx_path: 読み込むExcelファイルのパス
     csv_path: 書き出すCSVのファイル名
     sheet_name: CSVに変換するExcelのシート名
     use_cols: 0始まりで列を指定
+    index_col:
+    header: ヘッダーとなる行番号を指定
     """
     # read sheet
     df = pd.read_excel(
         xlsx_path,
         sheet_name=sheet_name,
         index_col=index_col,
-        usecols=usecols
+        usecols=usecols,
+        header=header
     )
     df.to_csv(csv_path)
     return
