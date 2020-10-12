@@ -10,18 +10,6 @@ from libs import parallel
 
 DRIVER_PATH = os.environ['DRIVER_PATH']
 
-# 最初のみ
-def get_csv_from_excel() -> None:
-    """excelのデータをcsvに変換して取得"""
-    cvt.excel_to_csv(
-        input_file_path='_storage/company_list.xlsx',
-        output_file_path='./_storage/company_list.csv',
-        sheet_name=1,
-        usecols=[1, 3, 4, 5, 11],
-        index_col=0)
-    return
-
-
 
 
 # csvから取得〜sheetに書き込み
@@ -143,6 +131,23 @@ def main():
 
 
 if __name__ == '__main__':
-    # get_csv_from_excel()
-    cvt.create_excel_book('./_storage/output.xlsx')
-    main()
+    # エクセルをCSVに変換
+    # cvt.excel_to_csv(
+    #     xlsx_path='_storage/sample_list.xlsx',
+    #     csv_path='./_storage/sample_list.csv',
+    #     sheet_name='Wantedly',
+    #     usecols=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+    #     index_col=0)
+    # エンコード
+    # print(cvt.get_encoding('./_storage/sample.csv'))
+    # cvt.convert_encoding(
+    #     './_storage/sample.csv',
+    #     './_storage/result.csv',
+    #     from_encoding='CP932',
+    #     to_encoding='utf-8'
+    # )
+
+
+    # CSVデータからエクセルを作成
+    # cvt.create_excel_book('./_storage/output.xlsx')
+    # main()
