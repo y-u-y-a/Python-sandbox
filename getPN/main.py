@@ -9,6 +9,7 @@ from libs import converter as cvt
 from libs import parallel
 
 DRIVER_PATH = os.environ['DRIVER_PATH']
+GOOGLE_URL = 'https://google.com/'
 
 
 
@@ -40,10 +41,9 @@ def get_phone_number(company_name) -> str:
         return driver
 
     driver = get_driver()
-    url = 'https://google.com/'
-    serach_word = f"{company_name} 電話番号"
+    serach_word = f'{company_name} 電話番号'
     # start
-    driver.get(url)
+    driver.get(GOOGLE_URL)
     serach_form = driver.find_element_by_name('q')
     serach_form.send_keys(serach_word)
     serach_form.submit()
@@ -51,8 +51,8 @@ def get_phone_number(company_name) -> str:
         phone_number = driver.find_element_by_class_name('mw31Ze').text
     except Exception:
         phone_number = ''
+    # end
     finally:
-        # end
         driver.quit()
         return phone_number
 
