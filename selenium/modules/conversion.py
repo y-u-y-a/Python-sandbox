@@ -15,7 +15,6 @@ def get_encoding(file_path):
     ファイルのencodingを取得
     file_path: エンコーディングを知りたいファイルのパスを指定
     """
-
     encoding = ''
     with codecs.open(file_path, mode='rb') as f:
         content = chardet.detect(f.read())
@@ -29,7 +28,6 @@ def convert_encoding(input_path, output_path, from_encoding=SHIFT_JIS, to_encodi
     input_path: エンコードしたいファイルのパスを指定
     output_path: エンコード後に書き出すファイルパスを指定
     """
-
     input_file = codecs.open(input_path, mode='r', encoding=from_encoding)
     output_file = codecs.open(output_path, mode='w', encoding=to_encoding)
 
@@ -51,7 +49,6 @@ def tsv_to_csv(tsv_path, csv_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8) -
     csv_path: csvのファイルパスを指定
     from_encoding: 変換したい
     """
-
     input_file = codecs.open(tsv_path, mode='r', encoding=from_encoding)
     output_file = codecs.open(csv_path, mode='w', encoding=to_encoding)
 

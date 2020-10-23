@@ -5,10 +5,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import openpyxl as exl
 
-from libs import converter as cvt
-from libs import parallel
+from modules import conversion as cv
+from modules import webdriver as wd
+from modules import process
 
-DRIVER_PATH = os.environ['DRIVER_PATH']
 GOOGLE_URL = 'https://google.com/'
 
 
@@ -31,16 +31,8 @@ def write_to_sheet(book, sheet, row, company) -> None:
 def get_phone_number(company_name) -> str:
     """電話番号の更新"""
 
-    def get_driver():
-        """Chromeのdriverを取得"""
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--lang=ja') # configure language
-        driver = webdriver.Chrome(DRIVER_PATH, options=options)
-        return driver
-
-    driver = get_driver()
+    ch = wd.Chrome()
+    driver = ch.driver
     serach_word = f'{company_name} 電話番号'
     # start
     driver.get(GOOGLE_URL)
@@ -85,7 +77,7 @@ def update_company_list(company_list) -> list:
             t.setDaemon(True)
             t.start()
             threads.append(t)
-        parallel.wait_all_threads(threads)
+        process.wait_all_threads(threads)
         i += 1
 
     # idで並び順を整理
@@ -100,7 +92,7 @@ def main() -> None:
     sheet = book.worksheets[0]
     input_file_path: str = './_storage/company_list.csv'
     dict_keys: list = ['name', 'url', 'charge', 'appointment', 'phone_number']
-    company_list: list = cvt.csv_to_dicts(
+    company_list: list = cv.csv_to_dicts(
         csv_path=input_file_path,
         dict_keys=dict_keys
     )
@@ -130,15 +122,15 @@ def main() -> None:
 
 if __name__ == '__main__':
     # エクセルをCSVに変換
-    cvt.excel_to_csv(
+    cv.excel_to_csv(
         xlsx_path='_storage/kaden.xlsx',
         csv_path='./_storage/kaden.csv',
         sheet_name='！新規獲得',
         usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
         index_col=1)
     # エンコーディング変換
-    # print(cvt.get_encoding('./_storage/sample.csv'))
-    # cvt.convert_encoding(
+    # print(cv.get_encoding('./_storage/sample.csv'))
+    # cv.convert_encoding(
     #     './_storage/sample.csv',
     #     './_storage/result.csv',
     #     from_encoding='CP932',
@@ -147,5 +139,5 @@ if __name__ == '__main__':
 
 
     # CSVデータからエクセルを作成
-    # cvt.create_excel_book('./_storage/output.xlsx')
+    # cv.create_excel_book('./_storage/output.xlsx')
     # main()

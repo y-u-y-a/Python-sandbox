@@ -1,6 +1,5 @@
 import threading, math
 
-
 def start_threads(base_list, thread_range, target_func) -> None:
     """並列処理"""
     i = 0
