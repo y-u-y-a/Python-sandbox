@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
 
 [packages]
 scrapy = "*"
@@ -14,3 +15,6 @@ python_version = "3.7"
 
 [scripts]
 main = "python main.py"
+genspider = "scrapy genspider"
+crawl = "scrapy crawl"
+

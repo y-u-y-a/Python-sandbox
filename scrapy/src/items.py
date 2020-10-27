@@ -6,7 +6,7 @@
 import scrapy
 
 
-class SrcItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class Post(scrapy.Item):
+    url = scrapy.Field()
+    title = scrapy.Field()
+    data = scrapy.Field()
