@@ -74,6 +74,13 @@ def csv_to_dicts(csv_path, dict_keys) -> list:
     return result_list
 
 
+def write_row(csv_path, *args):
+    with open(csv_path, 'a') as f:
+        w = csv.writer(f)
+        w.writerow(args)
+    return
+
+
 ############################
 # エクセル関係
 ############################

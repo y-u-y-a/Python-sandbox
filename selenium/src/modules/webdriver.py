@@ -23,7 +23,7 @@ class Chrome(object):
 
     def get_driver(self):
         options = Options()
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--lang=ja')
         # only docker
@@ -37,3 +37,12 @@ class Chrome(object):
         now = dt.strftime('%Y%m%d%H%M%S')
         self.driver.save_screenshot(f'./{now}.png')
         return None
+
+    def click(self, xpath):
+        self.driver.find_element_by_xpath(xpath).click()
+        return
+
+    def end(self):
+        time.sleep(2)
+        self.driver.quit()
+        return
