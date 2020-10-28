@@ -1,20 +1,26 @@
-# import requests, time
-# from bs4 import BeautifulSoup
+import time
+import requests
+from bs4 import BeautifulSoup
 
 
-# def get_html(url: str):
-#     time.sleep(1)
-#     res = requests.get(url)
-#     res.encoding = res.apparent_encoding
+class ScrapHTML(object):
 
-#     html = BeautifulSoup(res.text, "html.parser")
-#     return html
+    def __init__(self, url):
+        self.html = self.get_html(url)
+        return
 
-# def get_h1(html) -> str:
-#     h1_list = html.select('h1')
-#     return h1_list[0].getText()
+    def get_html(self, url):
+        time.sleep(1)
+        res = requests.get(url)
+        res.encoding = res.apparent_encoding
+        html = BeautifulSoup(res.text, 'html.parser')
+        return html
 
-# def get_text_list(html, tag_name) -> list:
-#     el_list: list = html.select(tag_name)
-#     text_list: list = [el.getText() for el in el_list]
-#     return text_list
+
+    def get_h1(self) -> dict:
+        h1_list = self.html.select('h1')
+        el = h1_list[0]
+        return {
+            'el': el,
+            'text': el.getText()
+        }

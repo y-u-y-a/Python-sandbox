@@ -1,10 +1,7 @@
-import time, threading, re, csv
+import time, re, csv, threading
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 import openpyxl as exl
 from bs4 import BeautifulSoup
 
@@ -56,9 +53,8 @@ def get_corp_by_mynavi(indst_id, csv_path):
             return
     ch.end()
 
-
-def main():
-
+# 企業名と詳細ページリンク
+def first():
     # 業種選定
     indst_list = [
         {'id': '0', 'name': 'maker'},
@@ -88,4 +84,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    first()

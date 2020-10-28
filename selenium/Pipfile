@@ -13,6 +13,8 @@ chardet = "*"
 pandas = "*"
 openpyxl = "*"
 xlrd = "*"
+requests = "*"
+lxml = "*"
 
 [requires]
 python_version = "3.7"
