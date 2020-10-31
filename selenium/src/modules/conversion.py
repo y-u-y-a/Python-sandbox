@@ -84,22 +84,22 @@ def write_row(csv_path, *args):
 ############################
 # エクセル関係
 ############################
-def excel_to_csv(xlsx_path, csv_path, sheet_name, usecols, index_col=0, header=1) -> None:
+def excel_to_csv(xlsx_path, csv_path, sheet_name, usecols, index_col=0, header=0) -> None:
     """
     excelのsheetを指定してCSVに変換
     xlsx_path: 読み込むExcelファイルのパス
-    csv_path: 書き出すCSVのファイル名
+    csv_path: 書き出すCSVファイルのパス
     sheet_name: CSVに変換するExcelのシート名
     use_cols: 0始まりで列を指定
-    index_col:
-    header: ヘッダーとなる行番号を指定
+    index_col: インデックスとなる列を指定(None: どの列もインデックスとして使用しない=連番使用)
+    header: ヘッダーとなる行を指定
     """
     # read sheet
     df = pd.read_excel(
         xlsx_path,
         sheet_name=sheet_name,
-        index_col=index_col,
         usecols=usecols,
+        index_col=index_col,
         header=header
     )
     df.to_csv(csv_path)

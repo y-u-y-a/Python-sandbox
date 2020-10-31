@@ -121,12 +121,12 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    # エクセルをCSVに変換
+
     cv.excel_to_csv(
         xlsx_path='_storage/kaden.xlsx',
         csv_path='./_storage/kaden.csv',
-        sheet_name='！新規獲得',
-        usecols=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        sheet_name='Type', # シート名を指定
+        usecols=[0, 1, 2, 3, 4], # 使用するカラムを指定
         index_col=1)
     # エンコーディング変換
     # print(cv.get_encoding('./_storage/sample.csv'))

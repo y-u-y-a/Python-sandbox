@@ -9,6 +9,7 @@ class ScrapHTML(object):
         self.html = self.get_html(url)
         return
 
+
     def get_html(self, url):
         time.sleep(1)
         res = requests.get(url)
