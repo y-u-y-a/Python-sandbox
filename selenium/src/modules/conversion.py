@@ -11,8 +11,7 @@ UTF_8 = 'utf-8'
 # エンコーディング関係
 ############################
 def get_encoding(file_path):
-    """
-    ファイルのencodingを取得
+    """ファイルのencodingを取得
     file_path: エンコーディングを知りたいファイルのパスを指定
     """
     encoding = ''
@@ -23,8 +22,7 @@ def get_encoding(file_path):
 
 
 def convert_encoding(input_path, output_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8) -> None:
-    """
-    encodingを変換してファイルへ書き込み
+    """encodingを変換してファイルへ書き込み
     input_path: エンコードしたいファイルのパスを指定
     output_path: エンコード後に書き出すファイルパスを指定
     """
@@ -40,11 +38,10 @@ def convert_encoding(input_path, output_path, from_encoding=SHIFT_JIS, to_encodi
 
 
 ############################
-# ファイル関係
+# CSV関係
 ############################
 def tsv_to_csv(tsv_path, csv_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8) -> None:
-    """
-    encodingを指定してTSVファイルをCSVファイルに変換
+    """encodingを指定してTSVファイルをCSVファイルに変換
     tsv_path: tsvのファイルパスを指定
     csv_path: csvのファイルパスを指定
     from_encoding: 変換したい
@@ -64,20 +61,28 @@ def tsv_to_csv(tsv_path, csv_path, from_encoding=SHIFT_JIS, to_encoding=UTF_8) -
     return
 
 
-def csv_to_dicts(csv_path, dict_keys) -> list:
-    """csvファイルをlistに変換"""
+def csv_to_dicts(csv_path, keyname_list) -> list:
+    """csvファイルをlistに変換
+        csv_path: csvファイルのパス
+        keyname_list: dict形式のキー名
+    """
     result_list = []
     with open(csv_path, mode='r', encoding=UTF_8) as f:
-        get_list = csv.DictReader(f, dict_keys)
+        # convert to dictlist
+        get_list = csv.DictReader(f, keyname_list)
         for row in get_list:
             result_list.append(dict(row))
     return result_list
 
 
-def write_row(csv_path, *args):
+def add_row(csv_path, val_list):
+    """CSVファイルに行を追加
+        csv_path: csvのファイルパス
+        val_list: 行の値を配列形式で取得
+    """
     with open(csv_path, 'a') as f:
         w = csv.writer(f)
-        w.writerow(args)
+        w.writerow(val_list)
     return
 
 
@@ -85,8 +90,7 @@ def write_row(csv_path, *args):
 # エクセル関係
 ############################
 def excel_to_csv(xlsx_path, csv_path, sheet_name, usecols, index_col=0, header=0) -> None:
-    """
-    excelのsheetを指定してCSVに変換
+    """excelのsheetを指定してCSVに変換
     xlsx_path: 読み込むExcelファイルのパス
     csv_path: 書き出すCSVファイルのパス
     sheet_name: CSVに変換するExcelのシート名

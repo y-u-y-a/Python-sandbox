@@ -21,3 +21,4 @@ python_version = "3.7"
 
 [scripts]
 main = "python src/main.py"
+process = "python src/modules/process.py"

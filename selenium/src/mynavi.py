@@ -43,7 +43,7 @@ def get_corp_by_mynavi(indst_id, csv_path):
                 'name': corp_el.text, # 会社名
                 'link': corp_el.get_attribute('href') # 詳細ページURL
             }
-            cv.write_row(csv_path, corp['name'], corp['link'])
+            cv.add_row(csv_path, corp.values())
 
         # 次の100件へ
         try:
