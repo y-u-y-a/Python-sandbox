@@ -20,5 +20,5 @@ lxml = "*"
 python_version = "3.7"
 
 [scripts]
-main = "python src/main.py"
+tel = "python src/tel.py"
 process = "python src/modules/process.py"
