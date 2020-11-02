@@ -54,7 +54,7 @@ def get_corp_by_mynavi(indst_id, csv_path):
     ch.end()
 
 # 企業名と詳細ページリンク
-def first():
+# def get_detailpage_link():
     # 業種選定
     indst_list = [
         {'id': '0', 'name': 'maker'},
@@ -84,4 +84,6 @@ def first():
 
 
 if __name__ == '__main__':
-    first()
+    # # 1. 会社名と詳細ページURL取得
+    # get_detailpage_link()
+    # 2. 詳細ページからデータを取得・csv作成

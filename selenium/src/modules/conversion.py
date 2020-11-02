@@ -74,6 +74,12 @@ def csv_to_dicts(csv_path, keyname_list) -> list:
             result_list.append(dict(row))
     return result_list
 
+def csv_to_list(csv_path) -> list:
+    """csvファイルを行ごとの二次元配列に変換"""
+    with open(csv_path, mode='r') as f:
+        two_dim_lst = csv.reader(f)
+        return list(two_dim_lst)
+
 
 def add_row(csv_path, val_list):
     """CSVファイルに行を追加
@@ -114,3 +120,16 @@ def create_excel_book(book_path):
     book = exl.Workbook()
     book.save(book_path)
     return book
+
+def add_row_to_sheet(sheet, row, val_lst) -> None:
+    """シート書き込み
+        row: 行番号(1始まり)
+        val_lst: 行に書き込む値のリスト
+    """
+    try:
+        for i, val in enumerate(val_lst):
+            column = i+1
+            sheet.cell(row=row, column=column, value=val)
+    except Exception:
+        pass
+    return
