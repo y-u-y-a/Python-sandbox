@@ -26,7 +26,6 @@ def get_phone_number(corp_name) -> str:
     ch = wd.Chrome()
     serach_word = f'{corp_name} 電話番号'
     with ch.driver as driver:
-        # driver = ch.driver
         driver.get('https://google.com/')
         serach_form = driver.find_element_by_name('q')
         serach_form.send_keys(serach_word)
@@ -36,12 +35,12 @@ def get_phone_number(corp_name) -> str:
         except Exception:
             phone_number = ''
         finally:
-            # driver.quit()
             return phone_number
 
 
 def update_corp_dict(corp):
-    corp['phone_number'] = get_phone_number(corp['name'])
+    corp_name = corp['name']
+    corp['phone_number'] = get_phone_number(corp_name)
     return corp
 
 
@@ -72,10 +71,9 @@ if __name__ == '__main__':
     # sp_corp_list = split_list(corp_list, process_range) # 分割
 
     # for sub_list in sp_corp_list:
-    #     # マルチプロセスで処理
+    #     # マルチプロセスで処理(5個ずつ)
     #     with Pool(process_range) as p:
     #         result_list = p.map(update_corp_dict, sub_list)
-    #         pprint.pprint(result_list)
     #         # csv出力
     #         for corp in result_list:
     #             cv.add_row(to_csv, corp.values())
@@ -84,19 +82,17 @@ if __name__ == '__main__':
     #########################
     # 3. 新規シート作成・書込み
     #########################
+    input_csv = '_storage/kaden/new.csv'
     xlsx_path = './_storage/type.xlsx'
     sheet_name = 'サンプルシート'
-    input_csv = '_storage/kaden/new.csv'
     label_lst = ['会社名', '電話番号']
 
+    # シート作成
     book = cv.create_excel_book(xlsx_path)
     sheet = book.worksheets[0]
     sheet.title = sheet_name
-
     # csvを2次元配列に変換
     lst = cv.csv_to_list(input_csv)
-    if label_lst:
-        lst.insert(0, label_lst)
-    for i, val_lst in enumerate(lst):
-        cv.add_row_to_sheet(sheet, row=i+1, val_lst=val_lst)
+    # 書き込み
+    cv.write_to_sheet(sheet, lst, label_lst=label_lst)
     book.save(xlsx_path)

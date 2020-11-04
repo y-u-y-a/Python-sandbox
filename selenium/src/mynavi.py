@@ -1,12 +1,12 @@
+from pprint import pprint as pp
 import time, re, csv, threading
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import openpyxl as exl
-from bs4 import BeautifulSoup
 
+from modules import process, scrap
 from modules import conversion as cv
-from modules import process
 from modules.webdriver import Chrome
 
 
@@ -53,10 +53,11 @@ def get_corp_by_mynavi(indst_id, csv_path):
             return
     ch.end()
 
-# 企業名と詳細ページリンク
-# def get_detailpage_link():
+
+def get_detailpage_link():
+    """会社名と詳細ページURL取得"""
     # 業種選定
-    indst_list = [
+    indst_lst = [
         {'id': '0', 'name': 'maker'},
         {'id': '1', 'name': 'trading'},
         {'id': '2', 'name': 'retail'},
@@ -69,10 +70,11 @@ def get_corp_by_mynavi(indst_id, csv_path):
 
     # 企業情報を取得
     threads = []
-    for indst in indst_list:
+    for indst in indst_lst:
         # industory info
         indst_id = indst['id']
-        csv_path = f"_storage/mynavi/{indst['name']}.csv"
+        indst_name = indst['name']
+        csv_path = f"_storage/mynavi/{indst_name}.csv"
         # start thread
         t = threading.Thread(
             target=get_corp_by_mynavi,
@@ -83,7 +85,37 @@ def get_corp_by_mynavi(indst_id, csv_path):
     process.wait_all_threads(threads)
 
 
+def get_about_corp(corp_name, page_link):
+    """企業の詳細データを取得
+        return: 企業名、電話番号、メールアドレス、企業HP、マイナビURL
+    """
+    sc = scrap.ScrapHTML(page_link)
+    html = sc.html
+
+    def get_val(item_name) -> str:
+        el = html.select(f"th:contains({item_name})", limit=1)
+        if el:
+            val = el[0].parent.td.text
+        else:
+            val = None
+        return val
+    # 取得
+    return {
+        'name': corp_name,
+        'tel': get_val('本社電話番号'),
+        'url': get_val('URL'),
+        'email': get_val('E-mail'),
+        'page_link': page_link
+    }
+
+
 if __name__ == '__main__':
     # # 1. 会社名と詳細ページURL取得
     # get_detailpage_link()
     # 2. 詳細ページからデータを取得・csv作成
+    # TODO: csvからページリンクなどを二次元配列で取得
+    result = get_about_corp(
+        corp_name='XXX株式会社',
+        page_link='https://job.mynavi.jp/21/pc/search/corp91256/outline.html'
+    )
+    pp(result)

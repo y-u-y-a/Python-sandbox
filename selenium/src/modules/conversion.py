@@ -121,15 +121,24 @@ def create_excel_book(book_path):
     book.save(book_path)
     return book
 
-def add_row_to_sheet(sheet, row, val_lst) -> None:
+def write_to_sheet(sheet, lst, label_lst=None) -> None:
     """シート書き込み
-        row: 行番号(1始まり)
-        val_lst: 行に書き込む値のリスト
+        sheet:
+        lst: 書き込む値を二次元配列で取得
+        label_lst: sheetのヘッダーを配列で取得
     """
     try:
-        for i, val in enumerate(val_lst):
-            column = i+1
-            sheet.cell(row=row, column=column, value=val)
+        # ラベル追加
+        if label_lst:
+            lst.insert(0, label_lst)
+        # 書き込み
+        for i, val_lst in enumerate(lst):
+            # 行番号
+            row = i+1
+            for j, val in enumerate(val_lst):
+                # 列番号
+                column = j+1
+                sheet.cell(row=row, column=column, value=val)
     except Exception:
         pass
     return
