@@ -11,15 +11,6 @@ from modules import webdriver as wd
 from modules import process
 
 
-def split_list(l, n):
-    """指定した要素数の2次元配列に変換
-    l: 元リスト
-    n: サブリストの要素数
-    """
-    for idx in range(0, len(l), n):
-        yield list(l[idx:idx + n])
-
-
 def get_phone_number(corp_name) -> str:
     """会社名から電話番号を取得"""
 
@@ -68,11 +59,12 @@ if __name__ == '__main__':
 
     # tmp = cv.csv_to_dicts(from_csv, keyname_list)
     # corp_list = tmp[600:] # csvの行番号+1と一致
-    # sp_corp_list = split_list(corp_list, process_range) # 分割
+    # sp_corp_list = process.split_list(corp_list, process_range) # 分割
 
     # for sub_list in sp_corp_list:
     #     # マルチプロセスで処理(5個ずつ)
     #     with Pool(process_range) as p:
+    #         # 順に取得
     #         result_list = p.map(update_corp_dict, sub_list)
     #         # csv出力
     #         for corp in result_list:

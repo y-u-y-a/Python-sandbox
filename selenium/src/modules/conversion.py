@@ -121,18 +121,18 @@ def create_excel_book(book_path):
     book.save(book_path)
     return book
 
-def write_to_sheet(sheet, lst, label_lst=None) -> None:
+def write_to_sheet(sheet, two_dim_lst, label_lst=None) -> None:
     """シート書き込み
         sheet:
-        lst: 書き込む値を二次元配列で取得
+        two_dim_lst: 書き込む値を二次元配列で取得
         label_lst: sheetのヘッダーを配列で取得
     """
     try:
         # ラベル追加
         if label_lst:
-            lst.insert(0, label_lst)
+            two_dim_lst.insert(0, label_lst)
         # 書き込み
-        for i, val_lst in enumerate(lst):
+        for i, val_lst in enumerate(two_dim_lst):
             # 行番号
             row = i+1
             for j, val in enumerate(val_lst):

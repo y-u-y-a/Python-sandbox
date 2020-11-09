@@ -25,19 +25,28 @@ def wait_all_threads(threads) -> None:
     print('全てのスレッドが終了')
     return
 
-if __name__ == '__main__':
 
-    # プロセス, 並列処理
-    def worker1(i):
-        print('start')
-        time.sleep(5)
-        print('end')
-        return i
+def split_list(l, n):
+    """指定した要素数の2次元配列に変換
+    l: 元リスト
+    n: サブリストの要素数
+    """
+    for idx in range(0, len(l), n):
+        yield list(l[idx:idx + n])
 
-    with multiprocessing.Pool(2) as p:
-        # p1 = p.apply(worker1, (100,)) # ブロック
-        # p2 = p.apply_async(worker1, (200,)) # 並列処理(=非同期)
-        # p3 = p.apply_async(worker1, (300,))
-        # p4 = p.apply_async(worker1, (400,))
-        result = p.map(worker1, (500, 600, 700, 800))
-        print(result)
+# if __name__ == '__main__':
+
+#     # プロセス, 並列処理
+#     def worker1(i):
+#         print('start')
+#         time.sleep(5)
+#         print('end')
+#         return i
+
+#     with multiprocessing.Pool(2) as p:
+#         # p1 = p.apply(worker1, (100,)) # ブロック
+#         # p2 = p.apply_async(worker1, (200,)) # 並列処理(=非同期)
+#         # p3 = p.apply_async(worker1, (300,))
+#         # p4 = p.apply_async(worker1, (400,))
+#         result = p.map(worker1, (500, 600, 700, 800))
+#         print(result)

@@ -1,5 +1,6 @@
 from pprint import pprint as pp
-import time, re, csv, threading
+import os, time, re, csv, threading
+from multiprocessing import Pool
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -11,6 +12,7 @@ from modules.webdriver import Chrome
 
 
 def get_corp_by_mynavi(indst_id, csv_path):
+    """マルチプロセス内で処理"""
     url = 'https://job.mynavi.jp/21/pc/corpinfo/displayCorpSearch/index'
     ch = Chrome()
     driver = ch.driver
@@ -85,37 +87,76 @@ def get_detailpage_link():
     process.wait_all_threads(threads)
 
 
-def get_about_corp(corp_name, page_link):
+def get_about_corp(corp):
     """企業の詳細データを取得
-        return: 企業名、電話番号、メールアドレス、企業HP、マイナビURL
+        return: {
+            name: 企業名
+            tel: 電話番号
+            url: 企業HP
+            email: メールアドレス
+            page_link: マイナビURL,
+            location: 本社所在地
+        }
     """
+    corp_name = corp[0]
+    page_link = corp[1]
     sc = scrap.ScrapHTML(page_link)
     html = sc.html
 
-    def get_val(item_name) -> str:
+    def get_val(item_name):
+        """テキストをスクレイピング"""
         el = html.select(f"th:contains({item_name})", limit=1)
         if el:
-            val = el[0].parent.td.text
+            text = el[0].parent.td.text
+            text = text.replace('　', ' ')
         else:
-            val = None
-        return val
+            text = ''
+        return text
+    def get_contact():
+        el = html.select('#corpDescDtoListDescText110')
+        if el:
+            text = el[0].text
+            text = text.replace('　', ' ')
+        else:
+            text = ''
+        return text
     # 取得
+    # url = get_val('URL')
+    # url = re.findall('(?P<url>https?://[^\s]+)', url)
     return {
+        'url': get_val('URL'),
         'name': corp_name,
         'tel': get_val('本社電話番号'),
-        'url': get_val('URL'),
         'email': get_val('E-mail'),
-        'page_link': page_link
+        'location': get_val('本社所在地'),
+        'contact': get_contact(),
+        'page_link': page_link,
     }
 
 
 if __name__ == '__main__':
-    # # 1. 会社名と詳細ページURL取得
+    # 1. 会社名と詳細ページURL取得
     # get_detailpage_link()
+
     # 2. 詳細ページからデータを取得・csv作成
-    # TODO: csvからページリンクなどを二次元配列で取得
-    result = get_about_corp(
-        corp_name='XXX株式会社',
-        page_link='https://job.mynavi.jp/21/pc/search/corp91256/outline.html'
-    )
-    pp(result)
+    filename = 'public.csv'
+    from_csv = f"./_storage/mynavi/{filename}"
+    to_csv = f"./_storage/mynavi/@{filename}"
+    process_range = 5
+
+    # csvから企業一覧取得
+    corp_lst = cv.csv_to_list(csv_path=from_csv)
+    sp_corp_lst = process.split_list(corp_lst, process_range)
+
+    # 5個ずつの二次元配列
+    for sub_lst in sp_corp_lst:
+        # 企業ごとにデータ取得(マルチプロセス)
+        with Pool(process_range) as p:
+            result_lst = p.map(get_about_corp, sub_lst)
+            # csv出力
+            for corp in result_lst:
+                cv.add_row(
+                    csv_path=to_csv,
+                    val_list=corp.values()
+                )
+
