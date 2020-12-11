@@ -139,13 +139,25 @@ if __name__ == '__main__':
     # get_detailpage_link()
 
     # 2. 詳細ページからデータを取得・csv作成
-    filename = 'public.csv'
+    print('***** CSV出力を開始します。*****')
+    print('\n読み込むCSVファイル名を指定してください。')
+    filename = f"{input('>> ')}.csv" # ex)finance
+    print('\n同時処理数を指定してください。')
+    process_range = int(input('>> '))
+    print('\n開始レコード番号を入力してください。')
+    start_rec = int(input('>> ')) -1
+    print('\n終了レコード番号を入力してください。')
+    end_rec = int(input('>> ')) -1
+
     from_csv = f"./_storage/mynavi/{filename}"
     to_csv = f"./_storage/mynavi/@{filename}"
-    process_range = 5
 
     # csvから企業一覧取得
     corp_lst = cv.csv_to_list(csv_path=from_csv)
+    if end_rec:
+        corp_lst = corp_lst[start_rec:end_rec]
+    else:
+        corp_lst = corp_lst[start_rec:]
     sp_corp_lst = process.split_list(corp_lst, process_range)
 
     # 5個ずつの二次元配列
